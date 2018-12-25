@@ -1,10 +1,6 @@
-package sorts;
+package wip;
 
-import static array.visualizer.ArrayVisualizer.aa;
-import static array.visualizer.ArrayVisualizer.comps;
-import static array.visualizer.ArrayVisualizer.marked;
-import static array.visualizer.ArrayVisualizer.sleep;
-import static array.visualizer.Swaps.swap;
+import java.util.Arrays;
 
 public class GrailSort {
 
@@ -19,7 +15,7 @@ public class GrailSort {
 	/* Define int and SORT_CMP                               */
 	/* and then call GrailSort() function                    */
 	/*                                                       */
-    /*														 */
+    /*							 							 */
 	/*                                                       */
 	/* Also classic in-place merge sort is implemented       */
 	/* under the name of RecStableSort()                     */
@@ -29,14 +25,15 @@ public class GrailSort {
 	final private static int GRAIL_EXT_BUFFER_LENGTH = 512;
 
 	private static int SORT_CMP(int a, int b){
-		comps++;
 		if(a < b) return -1;
 		if(a > b) return 1;
 		return 0;
 	}
 	
 	private static void grail_swap1(int[] arr, int a, int b){
-		swap(arr, a, b, 1);
+		int c = arr[a];
+		arr[a] = arr[b];
+		arr[b] = c;
 	}
 	
 	private static void grail_swapN(int[] arr, int a, int b, int n){
@@ -61,13 +58,7 @@ public class GrailSort {
 	}
 	
 	public static void grailSet(int[] arr, int i, int j) {
-        marked.set(1, i);
-        aa++;
-            //if(Math.random()*8<1.0)
-                //sleep(1);
-        // TODO Auto-generated method stub
         arr[i] = j;
-        sleep(1);
     }
 	
 	private static void grail_SortIns(int[] arr,int arrPtr,int len){
@@ -540,19 +531,45 @@ public class GrailSort {
 		grail_MergeWithoutBuffer(arr,arrPtr,ptr,Len-ptr);
 	}
 
-	public static void grailSort(int[] arr){
+	private static void grailSort(int[] arr){
 		grail_commonSort(arr,0,arr.length,null,0,0);
 	}
 
-	public static void GrailSortWithBuffer(int[] arr){
-		int[] ExtBuf = new int[GRAIL_EXT_BUFFER_LENGTH];
-		grail_commonSort(arr,0,arr.length,ExtBuf,0,GRAIL_EXT_BUFFER_LENGTH);
-	}
+	//private static void GrailSortWithBuffer(int[] arr){
+	//	int[] ExtBuf = new int[GRAIL_EXT_BUFFER_LENGTH];
+	//	grail_commonSort(arr,0,arr.length,ExtBuf,0,GRAIL_EXT_BUFFER_LENGTH);
+	//}
 	
-	public static void GrailSortWithDynBuffer(int[] arr){
-		int L=1;
-		while(L*L<arr.length) L*=2;
-		int[] ExtBuf = new int[L];
-		grail_commonSort(arr,0,arr.length,ExtBuf,0,L);
+	//private static void GrailSortWithDynBuffer(int[] arr){
+	//	int L=1;
+	//	while(L*L<arr.length) L*=2;
+	//	int[] ExtBuf = new int[L];
+	//	grail_commonSort(arr,0,arr.length,ExtBuf,0,L);
+	//}
+	
+	public static void main(String[] args){
+		boolean working = true;
+		
+		int[] numbers = new int[2000];
+		for(int i = 0; i < numbers.length; i++){
+			numbers[i] = (int) (Math.random()*numbers.length);
+		}
+		
+		grailSort(numbers);
+		
+		for(int i = 1; i < numbers.length; i++){
+			if(numbers[i] < numbers[i - 1]){
+				working = false;
+			}
+		}
+		
+		System.out.println(Arrays.toString(numbers));
+		
+		if(!working) {
+			System.out.println("Did not work...");
+		}
+		else{
+			System.out.println("Sorted!");
+		}
 	}
 }
