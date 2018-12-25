@@ -563,11 +563,7 @@ public class GrailSort {
 		
 		System.out.println(Arrays.toString(numbers));
 		
-		if(!working) {
-			System.out.println("Did not work...");
-		}
-		else{
-			System.out.println("Sorted!");
-		}
+		if(!working) System.out.println("Did not work...");
+		else System.out.println("Sorted!");
 	}
 }
