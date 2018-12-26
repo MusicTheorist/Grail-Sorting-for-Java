@@ -15,33 +15,35 @@ public class GrailSort {
 	/* Define int and SORT_CMP                               */
 	/* and then call GrailSort() function                    */
 	/*                                                       */
-        /*		                                         */
+    /*							 							 */
 	/*                                                       */
+	/* Also classic in-place merge sort is implemented       */
+	/* under the name of RecStableSort()                     */
 	/*                                                       */
 	/*********************************************************/
 
 	final private static int GRAIL_EXT_BUFFER_LENGTH = 512;
 
-	private static int SORT_CMP(int a, int b){
+	private static int SORT_CMP(double a, double b){
 		if(a < b) return -1;
 		if(a > b) return 1;
 		return 0;
 	}
 	
-	private static void grail_swap1(int[] arr, int a, int b){
-		int c = arr[a];
+	private static void grail_swap1(double[] arr, int a, int b){
+		double c = arr[a];
 		arr[a] = arr[b];
 		arr[b] = c;
 	}
 	
-	private static void grail_swapN(int[] arr, int a, int b, int n){
+	private static void grail_swapN(double[] arr, int a, int b, int n){
 		while(n != 0) { 
 			grail_swap1(arr,a++,b++);
 			n--;
 		}
 	}
 	
-	private static void grail_rotate(int[] arr, int a, int l1, int l2){
+	private static void grail_rotate(double[] arr, int a, int l1, int l2){
 		while(l1 != 0 && l2 != 0){
 			if(l1 <= l2){
 				grail_swapN(arr, a, a+l1, l1);
@@ -55,18 +57,18 @@ public class GrailSort {
 		}
 	}
 	
-	public static void grailSet(int[] arr, int i, int j) {
+	public static void grailSet(double[] arr, int i, double j) {
         arr[i] = j;
     }
 	
-	private static void grail_SortIns(int[] arr,int arrPtr,int len){
+	private static void grail_SortIns(double[] arr,int arrPtr,int len){
 		int i,j;
 		for(i=1;i<len;i++){
 			for(j=i-1;j>=0 && SORT_CMP(arr[arrPtr+j+1],arr[arrPtr+j])<0;j--) grail_swap1(arr,arrPtr+j,arrPtr+j+1);
 		}
 	}
 
-	private static int grail_BinSearchLeft(int[] arr,int arrPtr,int len,int key){
+	private static int grail_BinSearchLeft(double[] arr,int arrPtr,int len,int key){
 		int a=-1,b=len,c;
 		while(a<b-1){
 			c=a+((b-a)>>1);
@@ -75,7 +77,7 @@ public class GrailSort {
 		}
 		return b;
 	}
-	private static int grail_BinSearchRight(int[] arr,int arrPtr,int len,int key){
+	private static int grail_BinSearchRight(double[] arr,int arrPtr,int len,int key){
 		int a=-1,b=len,c;
 		while(a<b-1){
 			c=a+((b-a)>>1);
@@ -86,7 +88,7 @@ public class GrailSort {
 	}
 
 	// cost: 2*len+nk^2/2
-	private static int grail_FindKeys(int[] arr,int arrPtr,int len,int nkeys){
+	private static int grail_FindKeys(double[] arr,int arrPtr,int len,int nkeys){
 		int h=1,h0=0;  // first key is always here
 		int u=1,r;
 		while(u<len && h<nkeys){
@@ -104,7 +106,7 @@ public class GrailSort {
 	}
 
 	// cost: min(L1,L2)^2+max(L1,L2)
-	private static void grail_MergeWithoutBuffer(int[] arr,int arrPtr,int len1,int len2){
+	private static void grail_MergeWithoutBuffer(double[] arr,int arrPtr,int len1,int len2){
 		int h;
 		if(len1<len2){
 			while(len1!=0){
@@ -135,7 +137,7 @@ public class GrailSort {
 	}
 
 	// arr[M..-1] - buffer, arr[0,L1-1]++arr[L1,L1+L2-1] -> arr[M,M+L1+L2-1]
-	private static void grail_MergeLeft(int[] arr,int arrPtr,int L1,int L2,int M){
+	private static void grail_MergeLeft(double[] arr,int arrPtr,int L1,int L2,int M){
 		int p0=0;
 		int p1=L1;
 		L2+=L1;
@@ -149,7 +151,7 @@ public class GrailSort {
 		}
 		if(M!=p0) grail_swapN(arr,arrPtr+M,arrPtr+p0,L1-p0);
 	}
-	private static void grail_MergeRight(int[] arr,int arrPtr,int L1,int L2,int M){
+	private static void grail_MergeRight(double[] arr,int arrPtr,int L1,int L2,int M){
 		int p0=L1+L2+M-1;
 		int p2=L1+L2-1;
 		int p1=L1-1;
@@ -164,7 +166,7 @@ public class GrailSort {
 		if(p2!=p0) while(p2>=L1) grail_swap1(arr,arrPtr+(p0--),arrPtr+(p2--));
 	}
 
-	private static void grail_SmartMergeWithBuffer(int[] arr,int arrPtr,int alen1,int atype,int len2,int lkeys){
+	private static void grail_SmartMergeWithBuffer(double[] arr,int arrPtr,int alen1,int atype,int len2,int lkeys){
 		int p0=-lkeys,p1=0,p2=alen1,q1=p2,q2=p2+len2;
 		int ftype=1-atype;  // 1 if inverted
 		while(p1<q1 && p2<q2){
@@ -179,7 +181,7 @@ public class GrailSort {
 			atype=ftype;
 		}
 	}
-	private static void grail_SmartMergeWithoutBuffer(int[]arr,int arrPtr,int alen1,int atype,int _len2){
+	private static void grail_SmartMergeWithoutBuffer(double[]arr,int arrPtr,int alen1,int atype,int _len2){
 		int len1,len2,ftype,h;
 		
 		if(_len2 == 0) return;
@@ -212,7 +214,7 @@ public class GrailSort {
 	/***** Sort With Extra Buffer *****/
 
 	// arr[M..-1] - free, arr[0,L1-1]++arr[L1,L1+L2-1] -> arr[M,M+L1+L2-1]
-	private static void grail_MergeLeftWithXBuf(int[] arr,int arrPtr,int L1,int L2,int M){
+	private static void grail_MergeLeftWithXBuf(double[] arr,int arrPtr,int L1,int L2,int M){
 		int p0=0,p1=L1; L2+=L1;
 		while(p1<L2){
 			if(p0==L1 || SORT_CMP(arr[arrPtr+p0],arr[arrPtr+p1])>0) grailSet(arr,arrPtr+(M++),arrPtr+(p1++));
@@ -221,7 +223,7 @@ public class GrailSort {
 		if(M!=p0) while(p0<L1) grailSet(arr,arrPtr+(M++),arrPtr+(p0++));
 	}
 
-	private static void grail_SmartMergeWithXBuf(int[] arr,int arrPtr,int alen1,int atype,int len2,int lkeys){
+	private static void grail_SmartMergeWithXBuf(double[] arr,int arrPtr,int alen1,int atype,int len2,int lkeys){
 		int p0=-lkeys,p1=0,p2=alen1,q1=p2,q2=p2+len2;
 		int ftype=1-atype;  // 1 if inverted
 		while(p1<q1 && p2<q2){
@@ -242,7 +244,7 @@ public class GrailSort {
 	// keys - arrays of keys, in same order as blocks. key<midkey means stream A
 	// nblock2 are regular blocks from stream A. llast is length of last (irregular) block from stream B, that should go before nblock2 blocks.
 	// llast=0 requires nblock2=0 (no irregular blocks). llast>0, nblock2=0 is possible.
-	static void grail_MergeBuffersLeftWithXBuf(int[] arr,int keysPtr,int midkey,int arrPtr,int nblock,int lblock,int nblock2,int llast){
+	static void grail_MergeBuffersLeftWithXBuf(double[] arr,int keysPtr,int midkey,int arrPtr,int nblock,int lblock,int nblock2,int llast){
 		int l,prest,lrest,frest,pidx,cidx,fnext;
 
 		if(nblock==0){
@@ -292,7 +294,7 @@ public class GrailSort {
 	// build blocks of length K
 	// input: [-K,-1] elements are buffer
 	// output: first K elements are buffer, blocks 2*K and last subblock sorted
-	static void grail_BuildBlocks(int[] arr,int arrPtr,int L,int K,int[] extbuf,int bufPtr,int LExtBuf){
+	static void grail_BuildBlocks(double[] arr,int arrPtr,int L,int K,double[] extbuf,int bufPtr,int LExtBuf){
 		int m,u,h,p0,p1,rest,restk,p,kbuf;
 		kbuf=K<LExtBuf ? K : LExtBuf;
 		while((kbuf&(kbuf-1)) != 0) kbuf&=kbuf-1;  // max power or 2 - just in case
@@ -364,7 +366,7 @@ public class GrailSort {
 	// keys - arrays of keys, in same order as blocks. key<midkey means stream A
 	// nblock2 are regular blocks from stream A. llast is length of last (irregular) block from stream B, that should go before nblock2 blocks.
 	// llast=0 requires nblock2=0 (no irregular blocks). llast>0, nblock2=0 is possible.
-	private static void grail_MergeBuffersLeft(int[] arr,int keysPtr,int midkey,int arrPtr,int nblock,int lblock,boolean havebuf,int nblock2,int llast){
+	private static void grail_MergeBuffersLeft(double[] arr,int keysPtr,int midkey,int arrPtr,int nblock,int lblock,boolean havebuf,int nblock2,int llast){
 		int l,prest,lrest,frest,pidx,cidx,fnext;
 		
 		if(nblock==0){
@@ -410,7 +412,7 @@ public class GrailSort {
 		}
 	}
 
-	private static void grail_LazyStableSort(int[] arr,int arrPtr,int L){
+	private static void grail_LazyStableSort(double[] arr,int arrPtr,int L){
 		int m,h,p0,p1,rest;
 		for(m=1;m<L;m+=2){
 			if(SORT_CMP(arr[arrPtr+m-1],arr[arrPtr+m])>0) grail_swap1(arr,arrPtr+(m-1),arrPtr+m);
@@ -429,7 +431,7 @@ public class GrailSort {
 
 	// keys are on the left of arr. Blocks of length LL combined. We'll combine them in pairs
 	// LL and nkeys are powers of 2. (2*LL/lblock) keys are guarantied
-	private static void grail_CombineBlocks(int[] arr,int keysPtr,int arrPtr,int len,int LL,int lblock,boolean havebuf,int[] xbuf, int bufPtr){
+	private static void grail_CombineBlocks(double[] arr,int keysPtr,int arrPtr,int len,int LL,int lblock,boolean havebuf,double[] xbuf, int bufPtr){
 		int M,b,NBlk,midkey,lrest,u,p,v,kc,nbl2,llast;
 		int arr1;
 		
@@ -472,7 +474,7 @@ public class GrailSort {
 		}else if(havebuf) while(--len>=0) grail_swap1(arr,arrPtr+len,arrPtr+len-lblock);
 	}
 
-	private static void grail_commonSort(int[] arr,int arrPtr,int Len,int[]extbuf,int bufPtr,int LExtBuf){
+	private static void grail_commonSort(double[] arr,int arrPtr,int Len,double[]extbuf,int bufPtr,int LExtBuf){
 		int lblock,nkeys,findkeys,ptr,cbuf,lb,nk;
 		boolean havebuf,chavebuf;
 		int s;
@@ -529,7 +531,7 @@ public class GrailSort {
 		grail_MergeWithoutBuffer(arr,arrPtr,ptr,Len-ptr);
 	}
 
-	private static void grailSort(int[] arr){
+	private static void grailSort(double[] arr){
 		grail_commonSort(arr,0,arr.length,null,0,0);
 	}
 
@@ -548,9 +550,9 @@ public class GrailSort {
 	public static void main(String[] args){
 		boolean working = true;
 		
-		int[] numbers = new int[2000];
+		double[] numbers = new double[2000];
 		for(int i = 0; i < numbers.length; i++){
-			numbers[i] = (int) (Math.random()*numbers.length);
+			numbers[i] = Math.random()*numbers.length;
 		}
 		
 		grailSort(numbers);
