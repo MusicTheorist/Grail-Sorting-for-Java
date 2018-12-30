@@ -1,4 +1,4 @@
-package wip;
+package sorting;
 
 import java.util.Arrays;
 
@@ -15,7 +15,7 @@ public class GrailSort {
 	/* Define int and SORT_CMP                               */
 	/* and then call GrailSort() function                    */
 	/*                                                       */
-    /*							 							 */
+        /*                                                       */
 	/*                                                       */
 	/* Also classic in-place merge sort is implemented       */
 	/* under the name of RecStableSort()                     */
@@ -23,7 +23,9 @@ public class GrailSort {
 	/*********************************************************/
 
 	final private static int GRAIL_EXT_BUFFER_LENGTH = 512;
-
+	private static int refOne;
+	private static int refTwo;
+	
 	private static int SORT_CMP(double a, double b){
 		if(a < b) return -1;
 		if(a > b) return 1;
@@ -166,28 +168,28 @@ public class GrailSort {
 		if(p2!=p0) while(p2>=L1) grail_swap1(arr,arrPtr+(p0--),arrPtr+(p2--));
 	}
 
-	private static void grail_SmartMergeWithBuffer(double[] arr,int arrPtr,int alen1,int atype,int len2,int lkeys){
-		int p0=-lkeys,p1=0,p2=alen1,q1=p2,q2=p2+len2;
-		int ftype=1-atype;  // 1 if inverted
+	private static void grail_SmartMergeWithBuffer(double[] arr,int arrPtr,int len2,int lkeys){
+		int p0=-lkeys,p1=0,p2=refOne,q1=p2,q2=p2+len2;
+		int ftype=1-refTwo;  // 1 if inverted
 		while(p1<q1 && p2<q2){
 			if(SORT_CMP(arr[arrPtr+p1],arr[arrPtr+p2])-ftype<0) grail_swap1(arr,arrPtr+(p0++),arrPtr+(p1++));
 			else grail_swap1(arr,arrPtr+(p0++),arrPtr+(p2++));
 		}
 		if(p1<q1){
-			alen1=q1-p1;
+			refOne=q1-p1;
 			while(p1<q1) grail_swap1(arr,arrPtr+(--q1),arrPtr+(--q2));
 		} else{
-			alen1=q2-p2;
-			atype=ftype;
+			refOne=q2-p2;
+			refTwo=ftype;
 		}
 	}
-	private static void grail_SmartMergeWithoutBuffer(double[]arr,int arrPtr,int alen1,int atype,int _len2){
+	private static void grail_SmartMergeWithoutBuffer(double[]arr,int arrPtr,int _len2){
 		int len1,len2,ftype,h;
 		
 		if(_len2 == 0) return;
-		len1=alen1;
+		len1=refOne;
 		len2=_len2;
-		ftype=1-atype;
+		ftype=1-refTwo;
 		if(len1 != 0 && SORT_CMP(arr[arrPtr+(len1-1)],arr[arrPtr+len1])-ftype>=0){
 			while(len1!=0){
 				if (ftype!=0)
@@ -200,7 +202,7 @@ public class GrailSort {
 					len2-=h;
 				}
 				if(len2==0){
-					alen1=len1;
+					refOne=len1;
 					return;
 				}
 				do{
@@ -208,7 +210,7 @@ public class GrailSort {
 				} while(len1!=0 && SORT_CMP(arr[arrPtr],arr[arrPtr+len1])-ftype<0);
 			}
 		}
-		alen1=len2; atype=ftype;
+		refOne=len2; refTwo=ftype;
 	}
 
 	/***** Sort With Extra Buffer *****/
@@ -223,19 +225,19 @@ public class GrailSort {
 		if(M!=p0) while(p0<L1) grailSet(arr,arrPtr+(M++),arrPtr+(p0++));
 	}
 
-	private static void grail_SmartMergeWithXBuf(double[] arr,int arrPtr,int alen1,int atype,int len2,int lkeys){
-		int p0=-lkeys,p1=0,p2=alen1,q1=p2,q2=p2+len2;
-		int ftype=1-atype;  // 1 if inverted
+	private static void grail_SmartMergeWithXBuf(double[] arr,int arrPtr,int len2,int lkeys){
+		int p0=-lkeys,p1=0,p2=refOne,q1=p2,q2=p2+len2;
+		int ftype=1-refTwo;  // 1 if inverted
 		while(p1<q1 && p2<q2){
 			if(SORT_CMP(arr[arrPtr+p1],arr[arrPtr+p2])-ftype<0) grailSet(arr,arrPtr+(p0++),arrPtr+(p1++));
 			else grailSet(arr,arrPtr+(p0++),arrPtr+(p2++));
 		}
 		if(p1<q1){
-			alen1=q1-p1;
+			refOne=q1-p1;
 			while(p1<q1) grailSet(arr,arrPtr+(--q2),arrPtr+(--q1));
 		} else{
-			alen1=q2-p2;
-			atype=ftype;
+			refOne=q2-p2;
+			refTwo=ftype;
 		}
 	}
 
@@ -266,7 +268,11 @@ public class GrailSort {
 				prest=pidx;
 				lrest=lblock;
 			} else{
-				grail_SmartMergeWithXBuf(arr,arrPtr+prest,lrest,frest,lblock,lblock);
+				refOne = lrest;
+				refTwo = frest;
+				grail_SmartMergeWithXBuf(arr,arrPtr+prest,lblock,lblock);
+				lrest = refOne;
+				frest = refTwo;
 			}
 		}
 		prest=pidx-lrest;
@@ -388,11 +394,18 @@ public class GrailSort {
 				lrest=lblock;
 			} else{
 				if(havebuf){
-					grail_SmartMergeWithBuffer(arr,arrPtr+prest,lrest,frest,lblock,lblock);
+					refOne = lrest;
+					refTwo = frest;
+					grail_SmartMergeWithBuffer(arr,arrPtr+prest,lblock,lblock);
+					lrest = refOne;
+					frest = refTwo;
 				} else{
-					grail_SmartMergeWithoutBuffer(arr,arrPtr+prest,lrest,frest,lblock);
+					refOne = lrest;
+					refTwo = frest;
+					grail_SmartMergeWithoutBuffer(arr,arrPtr+prest,lblock);
+					lrest = refOne;
+					frest = refTwo;
 				}
-
 			}
 		}
 		prest=pidx-lrest;
@@ -534,18 +547,18 @@ public class GrailSort {
 	private static void grailSort(double[] arr){
 		grail_commonSort(arr,0,arr.length,null,0,0);
 	}
-
-	//private static void GrailSortWithBuffer(int[] arr){
-	//	int[] ExtBuf = new int[GRAIL_EXT_BUFFER_LENGTH];
-	//	grail_commonSort(arr,0,arr.length,ExtBuf,0,GRAIL_EXT_BUFFER_LENGTH);
-	//}
 	
-	//private static void GrailSortWithDynBuffer(int[] arr){
-	//	int L=1;
-	//	while(L*L<arr.length) L*=2;
-	//	int[] ExtBuf = new int[L];
-	//	grail_commonSort(arr,0,arr.length,ExtBuf,0,L);
-	//}
+	public static void grailSortWithBuffer(double[] arr){
+		double[] ExtBuf = new double[GRAIL_EXT_BUFFER_LENGTH];
+		grail_commonSort(arr,0,arr.length,ExtBuf,0,GRAIL_EXT_BUFFER_LENGTH);
+	}
+	
+	public static void grailSortWithDynBuffer(double[] arr){
+		int L=1;
+		while(L*L<arr.length) L*=2;
+		double[] ExtBuf = new double[L];
+		grail_commonSort(arr,0,arr.length,ExtBuf,0,L);
+	}
 	
 	public static void main(String[] args){
 		boolean working = true;
