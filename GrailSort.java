@@ -15,7 +15,7 @@ public class GrailSort {
 	/* Define int and SORT_CMP                               */
 	/* and then call GrailSort() function                    */
 	/*                                                       */
-    /*							 							 */
+        /*			                                 */
 	/*                                                       */
 	/* Also classic in-place merge sort is implemented       */
 	/* under the name of RecStableSort()                     */
