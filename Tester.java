@@ -59,20 +59,20 @@ public class Tester {
 		double timeStart = System.currentTimeMillis();
 		grailSortWithoutBuffer(arr, javaGrailSort);
 		double timeFinish = System.currentTimeMillis();
-		if(!testArray(arr, arr.length)) System.out.println("Grail Sort without buffers DID NOT sort successfully.");
-		else System.out.println("Grail Sort without buffers sorted successfully in " + (timeFinish - timeStart) + " milliseconds.");
+		if(!testArray(arr, arr.length)) System.out.println("Grail Sort without buffer DID NOT sort successfully.");
+		else System.out.println("Grail Sort without buffer sorted successfully in " + (timeFinish - timeStart) + " milliseconds.");
 		
-        generateArray(arr, keys, NMax, 0);
+      		generateArray(arr, keys, NMax, 0);
 		
-        timeStart = System.currentTimeMillis();
+                timeStart = System.currentTimeMillis();
 		grailSortWithBuffer(arr, javaGrailSort);
 		timeFinish = System.currentTimeMillis();
 		if(!testArray(arr, arr.length)) System.out.println("Grail Sort with static buffer DID NOT sort successfully.");
 		else System.out.println("Grail Sort with static buffer sorted successfully in " + (timeFinish - timeStart) + " milliseconds.");
 		
-        generateArray(arr, keys, NMax, 0);
+                generateArray(arr, keys, NMax, 0);
 		
-        timeStart = System.currentTimeMillis();
+                timeStart = System.currentTimeMillis();
 		grailSortWithDynBuffer(arr, javaGrailSort);
 		timeFinish = System.currentTimeMillis();
 		if(!testArray(arr, arr.length)) System.out.println("Grail Sort with dynamic buffer DID NOT sort successfully.");
