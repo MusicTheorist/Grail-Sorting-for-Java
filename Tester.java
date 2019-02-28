@@ -56,6 +56,8 @@ public class Tester {
 		}
 		int[] keys = new int[NMaxKey];
 		
+		generateArray(arr, keys, NMax, 0);
+		
 		double timeStart = System.currentTimeMillis();
 		grailSortWithoutBuffer(arr, javaGrailSort);
 		double timeFinish = System.currentTimeMillis();
