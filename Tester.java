@@ -15,7 +15,7 @@ import javagrailsort.SortComparator;
 
 public class Tester {
 	static DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
-    static DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+        static DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
     
 	private static SortComparator test;
 	
@@ -35,11 +35,8 @@ public class Tester {
 	}
 
 
-	private static void generateArray(SortType[] arr, int[] keyCenter, int Len, int NKey){
-		
-		for(int i = 0; i < NKey; i++) {
-			keyCenter[i] = 0;
-		}
+	private static void generateArray(SortType[] arr, int[] keyCenter, int Len, int NKey) {
+		for(int i = 0; i < NKey; i++) keyCenter[i] = 0;
 		
 		for(int i = 0; i < Len; i++) {
 			if(NKey != 0) {
@@ -65,10 +62,11 @@ public class Tester {
 	public static void main(String[] args){
 		test = new SortComparator();
 		symbols.setGroupingSeparator(',');
-        formatter.setDecimalFormatSymbols(symbols);
+        	formatter.setDecimalFormatSymbols(symbols);
 		
-		int NMax = 100;
-		int NMaxKey = NMax;
+		int NMax = 2048;
+		int NMaxKey = 1024;
+		
 		SortType[] arr = new SortType[NMax];
 		long timeStart = System.nanoTime();
 		for(int i = 0; i < arr.length; i++) {
@@ -93,13 +91,13 @@ public class Tester {
 		System.out.println("Finished Grail Sort w/o buffer");
 		noBufferFinish = (timeFinish - timeStart) / 1e+6;
 		
-        timeStart = System.nanoTime();
+  	        timeStart = System.nanoTime();
 		grailSortWithBuffer(staticBufferArray);
 		timeFinish = System.nanoTime();
 		System.out.println("Finished Grail Sort w/ static buffer");
 		staticBufferFinish = (timeFinish - timeStart) / 1e+6;
 		
-        timeStart = System.nanoTime();
+ 	       timeStart = System.nanoTime();
 		grailSortWithDynBuffer(dynamicBufferArray);
 		System.out.println("Finished Grail Sort w/ dynamic buffer");
 		timeFinish = System.nanoTime();
