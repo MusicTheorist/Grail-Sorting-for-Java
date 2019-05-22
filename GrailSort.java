@@ -462,7 +462,7 @@ public class GrailSort {
 	}
 
 	// keys are on the left of arr. Blocks of length buildLen combined. We'll combine them in pairs
-	// buildLen and nkeys are powers of 2. (2 * buildLen / regBlockLen) keys are guaranteed
+	// buildLen and keys are powers of 2. (2 * buildLen / regBlockLen) keys are guaranteed
 	private static void grailCombineBlocks(SortType[] arr, int keyPos, int pos, int len, int buildLen, int regBlockLen,
 					                               boolean havebuf, SortType[] buffer, int bufferPos) {
 
