@@ -16,11 +16,6 @@ Grail Sort without grailShift, 1 million integers:
 - Dynamic buffer: 327.712ms average of 1,000 tests
 
 Grail Sort with grailShift, 1 million integers:
-- Without buffer: 363.597ms average of 1,000 tests (1.304% faster)
-- Static buffer: 346.888ms average of 1,000 tests (2.567% faster)
-- Dynamic buffer: 318.45ms average of 1,000 tests (2.826% faster)
-
-
-- Without buffer: 363.104ms average of 20,000 tests (1.438% faster)
-- Static buffer: 346.409ms average of 20,000 tests (2.702% faster)
-- Dynamic buffer: 317.758ms average of 20,000 tests (3.037% faster)
+- Without buffer: 363.597ms average of 1,000 tests (1.304% faster), 363.104ms average of 20,000 tests (1.438% faster)
+- Static buffer: 346.888ms average of 1,000 tests (2.567% faster), 346.409ms average of 20,000 tests (2.702% faster)
+- Dynamic buffer: 318.45ms average of 1,000 tests (2.826% faster), 317.758ms average of 20,000 tests (3.037% faster)
