@@ -52,7 +52,7 @@ public class GrailSort {
         }
     }
     
-    // When keys are being rotated to their final position, b and a are right next to each other.
+    // When keys are being rotated to their final position, b and a are *usually* right next to each other.
     // Rather than continuously swapping elements, we can save time by keeping arr[b] in memory, 
     // shifting everything from b down to a by 1, and then writing arr[b] into index a. This way, 
     // we save extra write operations and make Grail Sort slightly faster. Effectively, grailKeyRotate
@@ -69,15 +69,22 @@ public class GrailSort {
     // of keys or block lengths at that point? I'll keep looking into this. Either way, here I don't
     // have to use a conditional as all grailKeyRotates have gaps of 1. This also saves time, as I
     // just hard code in the cases when grailKeyRotate is used over grailRotate.
+    
+    // UPDATE: I just found out that grailKeyRotate doesn't always swap elements right next to each other.
+    // I might give up on this "optimization" in the future.
     private static void grailKeyRotate(SortType[] array, int pos, int lenA, int lenB) {
         while(lenA != 0 && lenB != 0) {
             if(lenA <= lenB) {
-                grailKeyInsert(array, pos, pos + lenA, lenA);
+                if((pos + lenA) - pos == 1) grailKeyInsert(array, pos, pos + lenA, lenA);
+                else grailMultiSwap(array, pos, pos + lenA, lenA);
                 pos += lenA;
                 lenB -= lenA;
             } 
             else {
-                grailKeyInsert(array, pos + (lenA - lenB), pos + lenA, lenB);
+                if((pos + lenA) - (pos + (lenA - lenB)) == 1) {
+                    grailKeyInsert(array, pos + (lenA - lenB), pos + lenA, lenB);
+                }
+                else grailMultiSwap(array, pos + (lenA - lenB), pos + lenA, lenB);
                 lenA -= lenB;
             }
         }

@@ -27,10 +27,6 @@ public class Tester {
     static double staticBufferFinish;
     static double dynamicBufferFinish;
 
-    static double withoutAverage;
-    static double staticAverage;
-    static double dynamicAverage;
-
     /******** Tests *********/
 
     private static int randomNumber(int k){
