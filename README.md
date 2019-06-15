@@ -8,12 +8,14 @@ Grail Sort for Java is now slightly faster as well, as rotating keys to their fi
 
 UPDATE - Unfortunately, there are edge cases in key rotating as well. Will rethink this optimization in the future.
 
-Grail Sort without KeyInsert, 1 million integers:
-- Without buffer: 368.402ms average
-- Static buffer: 356.029ms average
-- Dynamic buffer: 327.712ms average
+2nd UPDATE - Using a conditional, I was able to attempt the grailShift method again. Seems to have helped with speed.
 
-Grail Sort with KeyInsert, 1 million integers:
-- Without buffer: 366.394ms average (0.545% faster)
-- Static buffer: 354.737ms average (0.363% faster)
-- Dynamic buffer: 321.445ms average (1.203% faster)
+Grail Sort without grailShift, 1 million integers:
+- Without buffer: 368.402ms average of 1,000 tests
+- Static buffer: 356.029ms average of 1,000 tests
+- Dynamic buffer: 327.712ms average of 1,000 tests
+
+Grail Sort with grailShift, 1 million integers:
+- Without buffer: 363.597ms average of 1,000 tests (1.304% faster), 363.104ms average of 20,000 tests (1.438% faster)
+- Static buffer: 346.888ms average of 1,000 tests (2.567% faster), 346.409ms average of 20,000 tests (2.702% faster)
+- Dynamic buffer: 318.45ms average of 1,000 tests (2.826% faster), 317.758ms average of 20,000 tests (3.037% faster)
