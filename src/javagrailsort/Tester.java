@@ -27,6 +27,10 @@ public class Tester {
     static double staticBufferFinish;
     static double dynamicBufferFinish;
 
+    static double noBuffAverage;
+    static double statAverage;
+    static double dynaAverage;
+
     /******** Tests *********/
 
     private static int randomNumber(int k){
@@ -64,56 +68,83 @@ public class Tester {
         symbols.setGroupingSeparator(',');
         formatter.setDecimalFormatSymbols(symbols);
 
-        int NMax = 4096;
-        int NMaxKey = 2048;
+        int NMax = 10000000;
+        int NMaxKey = 32767;
+        
+        for(int j = 0; j < 20; j++) {
+            SortType[] arr = new SortType[NMax];
+            long timeStart = System.nanoTime();
+            for(int i = 0; i < arr.length; i++) {
+                arr[i] = new SortType();
+            }
+            long timeFinish = System.nanoTime();
+            System.out.println("Finished allocating memory for array");
+            newArrayFinish = (timeFinish - timeStart) / 1e+6;
+            int[] keys = new int[NMaxKey];
+            
+            timeStart = System.nanoTime();
+            generateArray(arr, keys, NMax, 0);
+            timeFinish = System.nanoTime();
+            System.out.println("Finished generating array");
+            generateArrayFinish = (timeFinish - timeStart) / 1e+6;
+            SortType[] staticBufferArray = Arrays.copyOf(arr, arr.length);
+            SortType[] dynamicBufferArray = Arrays.copyOf(arr, arr.length);
 
-        SortType[] arr = new SortType[NMax];
-        long timeStart = System.nanoTime();
-        for(int i = 0; i < arr.length; i++) {
-            arr[i] = new SortType();
+            timeStart = System.nanoTime();
+            grailSortWithoutBuffer(arr);
+            timeFinish = System.nanoTime();
+            System.out.println("Finished Grail Sort w/o buffer");
+            noBufferFinish = (timeFinish - timeStart) / 1e+6;
+
+            timeStart = System.nanoTime();
+            grailSortWithBuffer(staticBufferArray);
+            timeFinish = System.nanoTime();
+            System.out.println("Finished Grail Sort w/ static buffer");
+            staticBufferFinish = (timeFinish - timeStart) / 1e+6;
+
+            timeStart = System.nanoTime();
+            grailSortWithDynBuffer(dynamicBufferArray);
+            System.out.println("Finished Grail Sort w/ dynamic buffer");
+            timeFinish = System.nanoTime();
+            dynamicBufferFinish = (timeFinish - timeStart) / 1e+6;
+
+            System.out.println(" ");
+            System.out.println("New array of length " + formatter.format(NMax) + " in " + formatter.format(newArrayFinish) + " milliseconds.");
+            System.out.println("Generated array of length " + formatter.format(NMax) + " in " + formatter.format(generateArrayFinish) + " milliseconds.");
+
+            if(!testArray(arr, arr.length)) {
+                System.out.println("Grail Sort without buffers DID NOT sort successfully.");
+                System.exit(1);
+            }
+            else System.out.println("Grail Sorting " + formatter.format(NMax) + " numbers without buffers sorted successfully in " + formatter.format(noBufferFinish) + " milliseconds.");
+
+            if(!testArray(staticBufferArray, staticBufferArray.length)) {
+                System.out.println("Grail Sort with static buffer DID NOT sort successfully.");
+                System.exit(1);
+            }
+            else System.out.println("Grail Sorting " + formatter.format(NMax) + " numbers with static buffer sorted successfully in " + formatter.format(staticBufferFinish) + " milliseconds.");
+
+            if(!testArray(dynamicBufferArray, dynamicBufferArray.length)) {
+                System.out.println("Grail Sort with dynamic buffer DID NOT sort successfully.");
+                System.exit(1);
+            }
+            else System.out.println("Grail Sorting " + formatter.format(NMax) + " numbers with dynamic buffer sorted successfully in " + formatter.format(dynamicBufferFinish) + " milliseconds.");
+
+            noBuffAverage += noBufferFinish;
+            statAverage += staticBufferFinish;
+            dynaAverage += dynamicBufferFinish;
+            
+            if(NMaxKey == 32767) NMaxKey = 16383;
+            else NMaxKey = 32767;
+            
+            System.out.println(" ");
+            System.out.println("Test " + (j + 1) + " complete.");
+            System.out.println(" ");
         }
-        long timeFinish = System.nanoTime();
-        System.out.println("Finished allocating memory for array");
-        newArrayFinish = (timeFinish - timeStart) / 1e+6;
-        int[] keys = new int[NMaxKey];
-
-        timeStart = System.nanoTime();
-        generateArray(arr, keys, NMax, 0);
-        timeFinish = System.nanoTime();
-        System.out.println("Finished generating array");
-        generateArrayFinish = (timeFinish - timeStart) / 1e+6;
-        SortType[] staticBufferArray = Arrays.copyOf(arr, arr.length);
-        SortType[] dynamicBufferArray = Arrays.copyOf(arr, arr.length);
-
-        timeStart = System.nanoTime();
-        grailSortWithoutBuffer(arr);
-        timeFinish = System.nanoTime();
-        System.out.println("Finished Grail Sort w/o buffer");
-        noBufferFinish = (timeFinish - timeStart) / 1e+6;
-
-        timeStart = System.nanoTime();
-        grailSortWithBuffer(staticBufferArray);
-        timeFinish = System.nanoTime();
-        System.out.println("Finished Grail Sort w/ static buffer");
-        staticBufferFinish = (timeFinish - timeStart) / 1e+6;
-
-        timeStart = System.nanoTime();
-        grailSortWithDynBuffer(dynamicBufferArray);
-        System.out.println("Finished Grail Sort w/ dynamic buffer");
-        timeFinish = System.nanoTime();
-        dynamicBufferFinish = (timeFinish - timeStart) / 1e+6;
 
         System.out.println(" ");
-        System.out.println("New array of length " + formatter.format(NMax) + " in " + formatter.format(newArrayFinish) + " milliseconds.");
-        System.out.println("Generated array of length " + formatter.format(NMax) + " in " + formatter.format(generateArrayFinish) + " milliseconds.");
-
-        if(!testArray(arr, arr.length)) System.out.println("Grail Sort without buffers DID NOT sort successfully.");
-        else System.out.println("Grail Sorting " + formatter.format(NMax) + " numbers without buffers sorted successfully in " + formatter.format(noBufferFinish) + " milliseconds.");
-
-        if(!testArray(staticBufferArray, staticBufferArray.length)) System.out.println("Grail Sort with static buffer DID NOT sort successfully.");
-        else System.out.println("Grail Sorting " + formatter.format(NMax) + " numbers with static buffer sorted successfully in " + formatter.format(staticBufferFinish) + " milliseconds.");
-
-        if(!testArray(dynamicBufferArray, dynamicBufferArray.length)) System.out.println("Grail Sort with dynamic buffer DID NOT sort successfully.");
-        else System.out.println("Grail Sorting " + formatter.format(NMax) + " numbers with dynamic buffer sorted successfully in " + formatter.format(dynamicBufferFinish) + " milliseconds.");
+        System.out.println("Average time in ms without buffer: " + noBuffAverage / 20);
+        System.out.println("Average time in ms with static buffer: " + statAverage / 20);
+        System.out.println("Average time in ms with dynamic buffer: " + dynaAverage / 20);
     }
 }

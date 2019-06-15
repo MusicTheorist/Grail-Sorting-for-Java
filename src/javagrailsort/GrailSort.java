@@ -41,13 +41,13 @@ public class GrailSort {
     private static void grailRotate(SortType[] array, int pos, int lenA, int lenB) {
         while(lenA != 0 && lenB != 0) {
             if(lenA <= lenB) {
-                if((pos + lenA) - pos == 1) grailShift(array, pos, pos + lenA, lenA);
+                if(lenA == 1) grailShift(array, pos, pos + lenA, lenA);
                 else grailMultiSwap(array, pos, pos + lenA, lenA);
                 pos += lenA;
                 lenB -= lenA;
             } 
             else {
-                if((pos + lenA) - (pos + (lenA - lenB)) == 1) grailShift(array, pos + (lenA - lenB), pos + lenA, lenB);
+                if(lenB == 1) grailShift(array, pos + (lenA - lenB), pos + lenA, lenB);
                 else grailMultiSwap(array, pos + (lenA - lenB), pos + lenA, lenB);
                 lenA -= lenB;
             }
@@ -125,7 +125,9 @@ public class GrailSort {
             
             if(loc == foundKeys || grail.compare(arr[pos + dist], arr[pos + (firstKey + loc)]) != 0) {
                 grailRotate(arr, pos + firstKey, foundKeys, dist - (firstKey + foundKeys));
+                
                 firstKey = dist - foundKeys;
+                
                 grailRotate(arr, pos + (firstKey + loc), foundKeys - loc, 1);
                 foundKeys++;
             }
@@ -145,6 +147,7 @@ public class GrailSort {
             
                 if(loc != 0) {
                     grailRotate(arr, pos, len1, loc);
+                    
                     pos += loc;
                     len2 -= loc;
                 }
@@ -176,11 +179,11 @@ public class GrailSort {
         }
     }
 
-    // arr - starting array. arr[0 - regBlockLen..-1] - buffer (if havebuf).
-    // regBlockLen - length of regular blocks. First blockCount blocks are stable sorted by 1st elements and key-coded
+    // arr - starting array. arr[0 - blockLen..-1] - buffer (if havebuf).
+    // blockLen - length of regular blocks. First blockCount blocks are stable sorted by 1st elements and key-coded
     // keysPos - arrays of keys, in same order as blocks. keysPos < midkey means stream A
     // aBlockCount are regular blocks from stream A.
-    // lastLen is length of last (irregular) block from stream B, that should go before nblock2 blocks.
+    // lastLen is length of last (irregular) block from stream B, that should go before aBlockCount blocks.
     // lastLen = 0 requires aBlockCount = 0 (no irregular blocks). lastLen > 0, aBlockCount = 0 is possible.
     private static void grailMergeBuffersLeft(SortType[] arr, int keysPos, int midkey, int pos, int blockCount, int blockLen,
                                               boolean havebuf, int aBlockCount, int lastLen) {
@@ -238,7 +241,7 @@ public class GrailSort {
             } 
             else leftOverLen += blockLen * aBlockCount;
 
-            if(havebuf) grailMergeLeft(arr, pos + restToProcess, leftOverLen, lastLen, -blockLen);
+            if(havebuf) grailMergeLeft(arr, pos + restToProcess, leftOverLen, lastLen, 0 - blockLen);
             else grailMergeWithoutBuffer(arr, pos + restToProcess, leftOverLen, lastLen);
         } 
         else {
@@ -390,7 +393,7 @@ public class GrailSort {
     // regBlockLen - length of regular blocks. First blockCount blocks are stable sorted by 1st elements and key-coded
     // keysPos - where keys are in array, in same order as blocks. keysPos < midkey means stream A
     // aBlockCount are regular blocks from stream A.
-    // lastLen is length of last (irregular) block from stream B, that should go before aCountBlock blocks.
+    // lastLen is length of last (irregular) block from stream B, that should go before aBlockCount blocks.
     // lastLen = 0 requires aBlockCount = 0 (no irregular blocks). lastLen > 0, aBlockCount = 0 is possible.
     private static void grailMergeBuffersLeftWithXBuf(SortType[] arr, int keysPos, int midkey, int pos, int blockCount,
                                                       int regBlockLen, int aBlockCount, int lastLen) {
@@ -482,14 +485,9 @@ public class GrailSort {
                 
                 int rest = len - left;
 
-                if(rest > part) {
-                    grailMergeLeftWithXBuf(arr, pos + left, part, rest - part, 0 - part);
-                }
+                if(rest > part) grailMergeLeftWithXBuf(arr, pos + left, part, rest - part, 0 - part);
                 else {
-                    while(left < len) {
-                        arr[pos + left - part] = arr[pos + left];
-                        left++;
-                    }
+                    while(left < len) arr[pos + left - part] = arr[pos + left++];
                 }
                 pos -= part;
             }
@@ -541,7 +539,7 @@ public class GrailSort {
         }
     }
 
-    // keys are on the left of arr. Blocks of length buildLen combined. We'll combine them in pairs
+    // keys are on the left of arr. Blocks of length buildLen combined. We'll combine them into pairs
     // buildLen and keys are powers of 2. (2 * buildLen / regBlockLen) keys are guaranteed
     private static void grailCombineBlocks(SortType[] arr, int keyPos, int pos, int len, int buildLen, int regBlockLen,
                                            boolean havebuf, SortType[] buffer, int bufferPos) {
@@ -638,7 +636,7 @@ public class GrailSort {
     }
 
     private static void grailCommonSort(SortType[] arr, int pos, int len, SortType[] buffer, int bufferPos, int bufferLen) {
-        if(len < 16) {
+        if(len <= 16) {
             grailInsertSort(arr, pos, len);
             return;
         }
