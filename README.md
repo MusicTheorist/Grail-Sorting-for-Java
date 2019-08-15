@@ -3,7 +3,7 @@ Refactoring of Grail Sort by Andrey Astrelin (https://github.com/Mrrl/GrailSort/
 
 GrailSort is a variant of Block Merge Sort (https://en.wikipedia.org/wiki/Block_sort), a stable, in-place, worst-case O(n log n) implementation of merge sort. It is similar to Mike McFadden's WikiSort (https://github.com/BonzaiThePenguin/WikiSort), yet differs by swapping both blocks and their tags in parallel before merging, and shifting an internal buffer back and forth. The internal buffer is used for locally merging/appending portions of the array.
 
-Like WikiSort, extra memory can be allocated for an external buffer, giving GrailSort a slight boost in speed. This implementation includes three options: 1) Sorting without an external buffer (O(1) space), 2) Sorting with a static buffer of 512 items, and 3) Sorting with a dynamic buffer scaled to the square root of the input array's length.
+Like WikiSort, extra memory can be allocated for an external buffer, giving GrailSort a slight boost in speed. This implementation includes three options: 1) sorting without an external buffer (O(1) space), 2) sorting with a static buffer of 512 items, and 3) sorting with a dynamic buffer scaled to the square root of the input array's length.
 
 Grail Sorting 10 million integers, average of twenty runs
 - Without buffer:                      415.198ms
