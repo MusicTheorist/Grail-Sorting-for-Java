@@ -1,7 +1,7 @@
 # Grail-Sorting-for-Java
 Refactoring of Grail Sort by Andrey Astrelin (https://github.com/Mrrl/GrailSort/blob/master/GrailSort.h) from C to Java.
 
-GrailSort is a variant of Block Merge Sort (https://en.wikipedia.org/wiki/Block_sort), a stable, in-place, worst-case O(n log n) implementation of merge sort. It is similar to Mike McFadden's WikiSort (https://github.com/BonzaiThePenguin/WikiSort), yet differs by swapping both blocks and their tags in an internal buffer before merging, and shifting said internal buffer back and forth to locally merge/append portions of the array.
+GrailSort is a variant of Block Merge Sort (https://en.wikipedia.org/wiki/Block_sort), a stable, in-place, worst-case O(n log n) implementation of merge sort. It is similar to Mike McFadden's WikiSort (https://github.com/BonzaiThePenguin/WikiSort), yet differs by swapping both blocks and their tags in parallel before merging, and shifting an internal buffer back and forth for locally merging/appending portions of the array.
 
 Grail Sorting 10 million integers, average of twenty runs
 - Without buffer:                      415.198ms
