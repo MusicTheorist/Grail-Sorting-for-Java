@@ -18,6 +18,7 @@ class SortType {
 }
 
 class SortComparator implements Comparator<SortType> {
+    @Override
     public int compare(SortType a, SortType b) {
         if (a.key < b.key) return -1;
         else if (a.key > b.key) return 1;

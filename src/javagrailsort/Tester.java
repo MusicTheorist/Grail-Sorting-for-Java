@@ -1,9 +1,5 @@
 package javagrailsort;
 
-import static javagrailsort.GrailSort.grailSortWithBuffer;
-import static javagrailsort.GrailSort.grailSortWithDynBuffer;
-import static javagrailsort.GrailSort.grailSortWithoutBuffer;
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -14,22 +10,22 @@ import javagrailsort.SortType;
 import javagrailsort.SortComparator;
 
 public class Tester {
-    static DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
-    static DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+    private static DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+    private static DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 
     private static SortComparator test;
 
     private static int seed = 100000001;
 
-    static double newArrayFinish;
-    static double generateArrayFinish;
-    static double noBufferFinish;
-    static double staticBufferFinish;
-    static double dynamicBufferFinish;
+    private static double newArrayFinish;
+    private static double generateArrayFinish;
+    private static double noBufferFinish;
+    private static double staticBufferFinish;
+    private static double dynamicBufferFinish;
 
-    static double noBuffAverage;
-    static double statAverage;
-    static double dynaAverage;
+    private static double noBuffAverage;
+    private static double statAverage;
+    private static double dynAverage;
 
     /******** Tests *********/
 
@@ -54,7 +50,7 @@ public class Tester {
         }
     }
 
-    private static boolean testArray(SortType[] arr, int Len) throws InterruptedException{
+    private static boolean testArray(SortType[] arr, int Len) {
         for(int i = 1; i < Len; i++) {
             int dk = test.compare(arr[i - 1], arr[i]);
             if(dk > 0) return false;
@@ -63,27 +59,29 @@ public class Tester {
         return true;
     }
 
-    public static void main(String[] args) throws InterruptedException{
+    public static void main(String[] args) {
+        GrailSort GrailSorter = new GrailSort();
         test = new SortComparator();
+        
         symbols.setGroupingSeparator(',');
         formatter.setDecimalFormatSymbols(symbols);
 
         int NMax = 10000000;
         int NMaxKey = 32767;
+
+        SortType[] arr = new SortType[NMax];
+        long timeStart = System.nanoTime();
+        for(int i = 0; i < arr.length; i++) {
+            arr[i] = new SortType();
+        }
+        long timeFinish = System.nanoTime();
+        System.out.println("Finished allocating memory for array");
+        newArrayFinish = (timeFinish - timeStart) / 1e+6;
+        int[] keys = new int[NMaxKey];
         
-        for(int j = 0; j < 20; j++) {
-            SortType[] arr = new SortType[NMax];
-            long timeStart = System.nanoTime();
-            for(int i = 0; i < arr.length; i++) {
-                arr[i] = new SortType();
-            }
-            long timeFinish = System.nanoTime();
-            System.out.println("Finished allocating memory for array");
-            newArrayFinish = (timeFinish - timeStart) / 1e+6;
-            int[] keys = new int[NMaxKey];
-            
+        for(int j = 0; j < 20; j++) {    
             timeStart = System.nanoTime();
-            generateArray(arr, keys, NMax, 0);
+            generateArray(arr, keys, NMax, NMaxKey);
             timeFinish = System.nanoTime();
             System.out.println("Finished generating array");
             generateArrayFinish = (timeFinish - timeStart) / 1e+6;
@@ -91,19 +89,19 @@ public class Tester {
             SortType[] dynamicBufferArray = Arrays.copyOf(arr, arr.length);
 
             timeStart = System.nanoTime();
-            grailSortWithoutBuffer(arr);
+            GrailSorter.grailSortWithoutBuffer(arr);
             timeFinish = System.nanoTime();
             System.out.println("Finished Grail Sort w/o buffer");
             noBufferFinish = (timeFinish - timeStart) / 1e+6;
 
             timeStart = System.nanoTime();
-            grailSortWithBuffer(staticBufferArray);
+            GrailSorter.grailSortWithBuffer(staticBufferArray);
             timeFinish = System.nanoTime();
             System.out.println("Finished Grail Sort w/ static buffer");
             staticBufferFinish = (timeFinish - timeStart) / 1e+6;
 
             timeStart = System.nanoTime();
-            grailSortWithDynBuffer(dynamicBufferArray);
+            GrailSorter.grailSortWithDynBuffer(dynamicBufferArray);
             System.out.println("Finished Grail Sort w/ dynamic buffer");
             timeFinish = System.nanoTime();
             dynamicBufferFinish = (timeFinish - timeStart) / 1e+6;
@@ -132,7 +130,7 @@ public class Tester {
 
             noBuffAverage += noBufferFinish;
             statAverage += staticBufferFinish;
-            dynaAverage += dynamicBufferFinish;
+            dynAverage += dynamicBufferFinish;
             
             if(NMaxKey == 32767) NMaxKey = 16383;
             else NMaxKey = 32767;
@@ -145,6 +143,6 @@ public class Tester {
         System.out.println(" ");
         System.out.println("Average time in ms without buffer: " + noBuffAverage / 20);
         System.out.println("Average time in ms with static buffer: " + statAverage / 20);
-        System.out.println("Average time in ms with dynamic buffer: " + dynaAverage / 20);
+        System.out.println("Average time in ms with dynamic buffer: " + dynAverage / 20);
     }
 }
