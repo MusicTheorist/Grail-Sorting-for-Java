@@ -19,7 +19,7 @@ package javagrailsort;
 /*                                                       */
 /*********************************************************/
 
-public class GrailSort {
+final public class GrailSort {
 
     final private int grailStaticBufferLen = 512;
 
