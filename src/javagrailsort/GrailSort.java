@@ -19,7 +19,7 @@ package javagrailsort;
 /*                                                       */
 /*********************************************************/
 
-public class GrailSort {
+final public class GrailSort {
 
     final private int grailStaticBufferLen = 512;
 
@@ -52,15 +52,27 @@ public class GrailSort {
         }
     }
     
+    // Thanks to https://jeffreystedfast.blogspot.com/2007/02/binary-insertion-sort.html for
+    // a great reference on InsertSort optimizations!!
+    
+    @SuppressWarnings("fallthrough")
     private void grailInsertSort(SortType[] arr, int pos, int len) {
         for(int i = 1; i < len; i++) {
-            int dist = pos + i - 1; 
-            SortType item = arr[pos + i];
+            int insertPos = grailBinSearch(arr, pos, pos + i, pos + i, false);
 
-            while((dist - pos) >= 0 && this.grail.compare(arr[dist], item) > 0) {
-                arr[dist + 1] = arr[dist--];
+            if(insertPos < i) {
+                SortType item = arr[pos + i];
+
+                // Used TimSort's Binary Insert as a reference here.
+                int shifts = (pos + i) - insertPos;
+                switch(shifts) {
+                    case 2:  arr[insertPos + 2] = arr[insertPos + 1];
+                    case 1:  arr[insertPos + 1] = arr[insertPos];
+                             break;
+                    default: System.arraycopy(arr, insertPos, arr, insertPos + 1, shifts);
+                }
+                arr[insertPos] = item;
             }
-            arr[dist + 1] = item;
         }
     }
 
@@ -69,7 +81,7 @@ public class GrailSort {
         int left = -1, right = len;
 
         while(left < right - 1) {
-            int mid = left + ((right - left) >> 1);
+            int mid = left + ((right - left) / 2);
 
             if(isLeft) {
                 if(this.grail.compare(arr[pos + mid], arr[keyPos]) >= 0) {
@@ -88,7 +100,7 @@ public class GrailSort {
     }
 
     // cost: 2 * len + numKeys^2 / 2
-    private int grailFindKeys(SortType[] arr, int pos, int len, int numKeys) {
+    private int grailGetKeys(SortType[] arr, int pos, int len, int numKeys) {
         int dist = 1;
         int foundKeys = 1, firstKey = 0;  // first key is always here
 
@@ -608,19 +620,18 @@ public class GrailSort {
     }
 
     private void grailCommonSort(SortType[] arr, int pos, int len, SortType[] buffer, int bufferPos, int bufferLen) {
-        if(len <= 16) {
+        if(len <= 32) {
             grailInsertSort(arr, pos, len);
             return;
         }
         
-        int blockLen = 1;
-        while(blockLen * blockLen < len) blockLen *= 2;     
+        int blockLen = (int) Math.sqrt(len);  
         int numKeys = (len - 1) / blockLen + 1;
         int keyLength = numKeys + blockLen;
         
         grailCommonSort(arr, pos, keyLength, buffer, bufferPos, bufferLen);
         
-        int keysFound = grailFindKeys(arr, pos, len, keyLength);
+        int keysFound = grailGetKeys(arr, pos, len, keyLength);
         
         boolean bufferEnabled = true;
 
