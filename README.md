@@ -5,24 +5,9 @@ GrailSort is a variant of Block Merge Sort (https://en.wikipedia.org/wiki/Block_
 
 Like WikiSort, extra memory can be allocated to an external buffer, potentially bypassing the need for an internal buffer and giving GrailSort a slight boost in speed. This implementation includes three options: 1) sorting without an external buffer -- O(1) space complexity, 2) sorting with a static buffer of 512 items -- O(512) space complexity, and 3) sorting with a dynamic buffer scaled to the square root of the input array's length -- O(sqrt(n)) space complexity.
 
-8/15/19: Using a tiny trick with recursion I found in Mr. Astrelin's other algorithm, Square Root Sort 
-         (https://github.com/Mrrl/SqrtSort/blob/master/SqrtSort.h), the process of collecting keys is
-         a bit faster now.
-
-Before this update, a binary search and multiple swaps, or rotations, were solely used to find distinct values, or keys, in the array. Keys are used in Block Merge Sort to maintain stability. If all the values in the input array are distinct, then this process simplifies to a variant of binary insertion sort, more specifically optimized gnome sort with a O(log n) worst-case search (https://en.wikipedia.org/wiki/Gnome_sort#Optimization). The number of keys GrailSort aims to collect is about 2*sqrt(length). Unfortunately, this worst-case scenario turns out to be a bit inefficient, especially for large arrays.
-         
-Instead, what if GrailSort recursively called itself on the same array yet only processing the length needed for said distinct
-keys? Again, this is around double the square root of the array size.
-         
-First of all, roughly how far is the recursion depth? Let's take a pretty large array of 100,000,000 numbers.
-- 1st call: Grail Sorting 100,000,000 numbers.
-- 2nd call: Grail Sorting 20,000 numbers.
-- 3rd call: Grail Sorting 282 numbers.
-- 4th call: Grail Sorting 33 numbers.
-- 5th call: Grail Sorting 11 numbers.
-
-Now we stop, because GrailSort devolves to Binary Insertion Sort on arrays with 32 items or less. That's pretty fast for that case! As we climb up the stack, the number of keys were already sorted by the last call, either by an optimal use of insertion sort or GrailSort itself! Even better, we know that this method is still a stable sort, as Binary Insertion Sort is stable, and GrailSort is stable. Voila, an even faster version of Block Merge Sort!
-
 EDIT: The results for GrailSort's runtime have been removed. I just discovered they were heavily skewed because the random number generator was not working properly. Should have compared Mr. Astrelin's results to mine, anyways. Oh dear. Will update this when I get the chance.
 
 EDIT2: GrailSort's Insertion Sort is now a Binary Insertion Sort with a few tricks up its sleeves, making it asymptotically optimal. Because of that, I boosted the "small array" cutoff up to 32.
+
+EDIT3: The previous trick with recursion ended up changing the space complexity (thanks for pointing this out, Morwenn!), and that was not
+my goal. grailFindKeys is once again a bottleneck for this algorithm. Hopefully some day I'll figure out how to properly optimize it. For now, keeping the changes made to Insertion Sort as that is for sure optimal now.
