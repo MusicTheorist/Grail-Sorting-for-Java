@@ -21,16 +21,12 @@ keys? Again, this is around the square root of the array size.
          
 First of all, how far is the recursion depth? Let's take a pretty large array of 100,000,000 numbers.
 - 1st call: Grail Sorting 100,000,000 numbers.
-- 2nd call: Grail Sorting 10,000 numbers.
-- 3rd call: Grail Sorting 100 numbers.
-- 4th call: Grail Sorting 10 numbers.
+- 2nd call: Grail Sorting 19,999 numbers.
+- 3rd call: Grail Sorting 281 numbers.
+- 4th call: Grail Sorting 32 numbers.
+- 5th call: Grail Sorting 10 numbers.
          
-Now we stop, because GrailSort devolves to Insertion Sort on arrays with 16 items or less. That's pretty fast for that case!
-         
-As we climb up the stack, most keys should already be sorted by the previous recursion. Even if they aren't,
-and assuming the worst case of grailFindKeys, the distance items need to be swapped is much shorter.
-         
-Even better, we know that this method is still a stable sort, as Insertion Sort is stable, and GrailSort is stable. Voila, an
+Now we stop, because GrailSort devolves to Insertion Sort on arrays with 16 items or less. That's pretty fast for that case! As we climb up the stack, the number of keys were already sorted by the last call, either by an optimal use of insertion sort or GrailSort itself! Even better, we know that this method is still a stable sort, as Insertion Sort is stable, and GrailSort is stable. Voila, an
 even faster version of Block Merge Sort!
 
 How about some results?
