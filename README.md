@@ -12,9 +12,9 @@ Like WikiSort, extra memory can be allocated to an external buffer, potentially 
 Before this update, a binary search and multiple swaps, or rotations, were solely used to find distinct values, or keys, in the array. Keys are used in Block Merge Sort to maintain stability. If all the values in the input array are distinct, then this process simplifies to a variant of binary insertion sort, more specifically optimized gnome sort with a O(log n) worst-case search (https://en.wikipedia.org/wiki/Gnome_sort#Optimization). The number of keys GrailSort aims to collect is about 2*sqrt(length). Unfortunately, this worst-case scenario turns out to be a bit inefficient, especially for large arrays.
          
 Instead, what if GrailSort recursively called itself on the same array yet only processing the length needed for said distinct
-keys? Again, this is around the square root of the array size.
+keys? Again, this is around double the square root of the array size.
          
-First of all, how far is the recursion depth? Let's take a pretty large array of 100,000,000 numbers.
+First of all, roughly how far is the recursion depth? Let's take a pretty large array of 100,000,000 numbers.
 - 1st call: Grail Sorting 100,000,000 numbers.
 - 2nd call: Grail Sorting 20,000 numbers.
 - 3rd call: Grail Sorting 282 numbers.
