@@ -628,9 +628,6 @@ final public class GrailSort {
         int blockLen = (int) Math.sqrt(len);  
         int numKeys = ((len - 1) / blockLen) + 1;
         int keyLength = numKeys + blockLen;
-        
-        grailCommonSort(arr, pos, keyLength + 1, buffer, bufferPos, bufferLen);
-        
         int keysFound = grailGetKeys(arr, pos, len, keyLength);
         
         boolean bufferEnabled = true;
