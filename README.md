@@ -14,9 +14,8 @@ Grail Sorting 10 million integers, average of twenty runs
          (https://github.com/Mrrl/SqrtSort/blob/master/SqrtSort.h), the process of collecting keys is
          a bit faster now.
 
-Before this update, a binary search and multiple swaps, or rotations, to find distinct values in the array.
-If all the values in the input array are distinct, then this process would simplify to a variant of binary insertion sort,
-more specifically optimized gnome sort (https://en.wikipedia.org/wiki/Gnome_sort#Optimization). The number of keys GrailSort            collects is a little over the square root of the array size. Unfortunately, that still turns out to be a bit inefficient,                especially for large arrays.
+Before this update, a binary search and multiple swaps, or rotations, were used to find distinct values, or keys, in the array.
+Keys are used in Block Merge Sort to maintain stability. If all the values in the input array are distinct, then this process would simplify to a variant of binary insertion sort, more specifically optimized gnome sort (https://en.wikipedia.org/wiki/Gnome_sort#Optimization). The number of keys GrailSort collects is a little over the square root of the array size. Unfortunately, that still turns out to be a bit inefficient, especially for large arrays.
          
 Instead, what if GrailSort recursively called itself on the same array yet only processing the length needed for said distinct
 keys? Again, this is around the square root of the array size.
